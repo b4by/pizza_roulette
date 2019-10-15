@@ -1,0 +1,133 @@
+/* FONTS */
+
+@font-face {
+  font-family: DodoFont1;
+  src: url('fonts/dodo-font.woff2');
+}
+
+@font-face {
+  font-family: DodoFont2;
+  src: url('fonts/dodo-font2.woff2');
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: DodoFont2;
+}
+
+.container {
+  margin: 0 auto;
+  width: 320px;
+  height: 480px;
+}
+
+.banner {
+  position: relative;
+  background: #ff6900;
+  height: 100%;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 35px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.logo-img {
+  display: block;
+  margin-right: 15px;
+}
+
+.logo-text {
+  font-size: 35px;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.pizza {
+  position: relative;
+  text-align: center;
+  animation: spin .1s infinite linear;
+}
+
+/* animation */ 
+
+@-moz-keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    -moz-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -moz-transform: translateY(-30px);
+    transform: translateY(-30px);
+  }
+  100% {
+    -moz-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+@-webkit-keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-30px);
+    transform: translateY(-30px);
+  }
+  60% {
+    -webkit-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -moz-transform: translateY(-30px);
+    -ms-transform: translateY(-30px);
+    -webkit-transform: translateY(-30px);
+    transform: translateY(-30px);
+  }
+  100% {
+    -moz-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -webkit-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+
+@-moz-keyframes spin {
+  from { -moz-transform: rotate(0deg); }
+  to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+}
+
+#canvas {
+  display: flex;
+  justify-content: center;
+}

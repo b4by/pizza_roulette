@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+  <div class="container">
+    <div class="banner">
+      <div class="logo">
+        <p class="logo-text">Рулеточка</p>
+      </div>
+      <div class="content">
+        <div id="timer"></div>
+        <span id="spin">
+          <canvas id="canvas" width="320" height="480"></canvas>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+
+  <script type="text/javascript">
+      (function() {
+        var canvas = document.getElementById('canvas');
+        canvas.width = 320;
+        canvas.height = 480;
+
+        var circle, card_arrow, button, btn_rect, footer_text, currentPizza;
+        var stage = new createjs.Stage("canvas");
+
+        stage.y = 150;
+
+        var queue = new createjs.LoadQueue();
+
+        queue.installPlugin(createjs.RotationPlugin)
+        queue.on('complete', loaded);
+        queue.loadManifest([
+          {id: "pizza", src:"img/pizza2.png"},
+          {id: "card_arrow", src:"img/card-arrow.png"},
+          {id: "pizza1", src: "img/part1.png"}, // пицца с хуйнёй
+          {id: "pizza2", src: "img/part2.png"}, // пицца с перчиком
+          {id: "pizza3", src: "img/part3.png"}, // пицца с ветчиной
+          {id: "pizza4", src: "img/part4.png"}, // пицца с мясом
+          {id: "pizza5", src: "img/part5.png"}, // пицца с сыром
+          {id: "pizza6", src: "img/part6.png"}, // пицца с мазиком
+          {id: "full_pizza1", src: "img/full_pizza1.jpg"},
+          {id: "full_pizza2", src: "img/full_pizza2.jpg"},
+          {id: "full_pizza3", src: "img/full_pizza3.jpg"},
+          {id: "full_pizza4", src: "img/full_pizza4.jpg"},
+          {id: "full_pizza5", src: "img/full_pizza5.jpg"},
+          {id: "full_pizza6", src: "img/full_pizza6.jpg"},
+        ]);
+
+        function loaded() {
+          circle = new createjs.Shape();
+          circle.graphics.beginBitmapFill(
+            queue.getResult("pizza"),
+            "no-repeat"
+          )
+          
+          circle.graphics.drawCircle(0, 0, 230);
+          circle.regX = 179 / 2;
+          circle.regY = 183 / 2;
+          circle.x = stage.canvas.width / 2;
+          circle.y = 120;
+     
+
+          card_arrow = new createjs.Bitmap(queue.getResult("card_arrow"));
+          card_arrow.scaleY = card_arrow.scaleX = 0.8;
+          card_arrow.x = (stage.canvas.width / 2) - (31 * card_arrow.scaleX / 2); //31 - это ширина картинки card_arrow;
+          card_arrow.y = 0;
+
+          button = new createjs.Container();
+          btn_rect = new createjs.Shape();
+          var btn_text = new createjs.Text();
+          btn_rect.graphics.beginFill('#fff')
+          btn_rect.graphics.drawRoundRectComplex(0,0, 213, 55, 8, 8, 8, 8);
+          btn_rect.x = 60;
+          btn_rect.y = 230;
+
+          btn_rect.shadow = new createjs.Shadow("#000", 0, 1, 5);
+
+          btn_text.set({
+            font: 'bold 24px DodoFont1',
+            color: '#ff6900',
+            textAlign: 'center',
+            textBaseline: 'middle',
+            x: 165,
+            y: 260,
+            text: 'SPIN'
+          })
+
+          footer_text = new createjs.Text();
+          footer_text.set({
+            font: 'bold 13px DodoFont1',
+            color: '#fff',
+            textAlign: 'center',
+            textBaseline: 'middle',
+            text: "Get free pizza for your first order"
+          })
+
+          footer_text.x = 165;
+          footer_text.y = 310;
+
+          button.addChild(btn_rect, btn_text);
+          
+          stage.addChild(circle, card_arrow, button, footer_text);
+          
+          button.addEventListener('click', handleOnClick);
+          button.addEventListener('mouseover', handleMouseOver);
+
+          createjs.Ticker.timingMode = createjs.Ticker.RAF;
+          createjs.Ticker.addEventListener("tick", tick);
+        }
+
+        var random_number = Math.floor(Math.random() * 12) + 3;
+        var degres = ['60', '120', '180', '240', '300', '360'];
+        var random_index = Math.floor(Math.random() * 5) + 0;
+        var random_degres = degres[random_index];
+
+        var rotations = Number(random_number * random_degres / 360).toFixed(3);
+
+        function tick() {
+          stage.update(event);
+        }
+
+        function createEndShape() {
+          var yourPizzaContainer = new createjs.Container();
+          var yourPizzaShape = new createjs.Shape();
+            yourPizzaShape.graphics.beginFill('#fff');
+            yourPizzaShape.graphics.drawRoundRectComplex(40, 20, 240, 190, 8, 8, 8, 8);
+
+            circle.alpha = 0;
+            card_arrow.alpha = 0;
+            button.alpha = 0;
+
+            yourPizza = new createjs.Bitmap(currentPizza);
+            yourPizza.scaleX = 0.5;
+            yourPizza.scaleY = 0.5;
+            yourPizza.x = 95;
+            yourPizza.y = 40;
+
+            var takeYourPizzaBtn = new createjs.Container();
+            var takeYourPizzaShape = new createjs.Shape();
+            var takeYourPizzaText = new createjs.Text();
+            takeYourPizzaShape.graphics.beginFill('#fff')
+            takeYourPizzaShape.graphics.drawRoundRectComplex(0,0, 213, 55, 8, 8, 8, 8);
+            takeYourPizzaShape.x = 60;
+            takeYourPizzaShape.y = 230;
+
+            takeYourPizzaShape.shadow = new createjs.Shadow("#000", 0, 1, 5);
+ 
+            takeYourPizzaText.set({
+              font: 'bold 16px DodoFont1',
+              color: '#ff6900',
+              textAlign: 'center',
+              textBaseline: 'middle',
+              x: 165,
+              y: 260,
+              text: 'TAKE YOUR PIZZA NOW'
+            })
+
+            takeYourPizzaBtn.addChild(takeYourPizzaShape, takeYourPizzaText)
+
+          
+            yourPizzaContainer.addChild(yourPizzaShape, yourPizza);
+            stage.addChild(yourPizzaContainer, takeYourPizzaBtn);
+            stage.update(event);
+        }
+
+        function handleMouseOver() {
+          createjs.Tween.get(btn_rect.shadow).to({blur: 0, offsetY: 0}, 100, createjs.Ease.easeOut);
+        }
+
+        function handleOnClick() {
+          createjs.Tween.get(btn_rect.shadow).to({blur: 0, offsetY: 0}, 200, createjs.Ease.easeInOut).to({blur: 5, offsetY: 1})
+          rotations = rotations - Math.floor(rotations);
+          rotations = Number(rotations.toFixed(3));
+          console.log(rotations)
+          switch (rotations) {
+            case 0: 
+            console.log('с сыром')
+            currentPizza = queue.getResult("full_pizza5");
+            break;
+            case 0.166:
+            case 0.167:
+            console.log('с ветчиной')
+            currentPizza = queue.getResult("full_pizza3");
+            break;
+            case 0.333:
+            console.log('с мазиком')
+            currentPizza = queue.getResult("full_pizza6");
+            break;
+            case 0.5:
+            case 0.666:
+            console.log('с мясом')
+            currentPizza = queue.getResult("full_pizza1");
+            break;
+            case 0.667:
+            console.log('с перчиком')
+            currentPizza = queue.getResult("full_pizza2");
+            break;
+            case 0.833:
+            console.log('с хуитой')
+            currentPizza = queue.getResult("full_pizza4");
+            break;
+          }
+          createjs.Tween.get(circle, {loop: false}).to({rotation: random_number * random_degres}, 3000, createjs.Ease.quintOut).call(function() {
+            createEndShape();
+            stage.update(event);
+          })
+        }
+
+      })();
+
+  </script>
+
+</body>
+</html>
