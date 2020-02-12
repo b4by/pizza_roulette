@@ -1,2 +1,2 @@
-# pizza_roulette
-html5 banner рулеточка с пиццами
+_____
+https://b4by.github.io/pizza_roulette/
